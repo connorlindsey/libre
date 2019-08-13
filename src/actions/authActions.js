@@ -14,7 +14,6 @@ export const signOut = () => dispatch => {
 };
 
 export const updateUser = payload => dispatch => {
-  console.log('Update user', payload);
   dispatch({
     type: UPDATE_CURRENT_USER,
     payload

@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
-// import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/Dashboard/Dashboard";
 // import Profile from "./pages/Profile";
 // import Manager from "./pages/Manager";
 // import OrderConfirmation from "./pages/OrderConfirmation";
@@ -42,8 +42,8 @@ class App extends React.Component {
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={SignUp} />
-            {/* <UserRoute path="/dashboard" component={Dashboard} currentUser={this.props.currentUser} />
-            <UserRoute path="/profile" component={Profile} currentUser={this.props.currentUser} />
+            <UserRoute path="/dashboard" component={Dashboard} currentUser={this.props.currentUser} />
+            {/* <UserRoute path="/profile" component={Profile} currentUser={this.props.currentUser} />
             <Route path="/order-confirmation" component={OrderConfirmation} />
             <Route path="/email-confirmation" component={ConfirmEmail} /> */}
             <Route component={Home} />
@@ -56,14 +56,12 @@ class App extends React.Component {
 
 App.propTypes = {
   user: PropTypes.object,
-  currentUser: PropTypes.object,
-  admin: PropTypes.bool.isRequired,
+  currentUser: PropTypes.object
 }
 
 const mapStateToProps = state => ({
   user: state.auth.user,
-  currentUser: state.auth.currentUser,
-  admin: state.auth.admin
+  currentUser: state.auth.currentUser
 });
 
 export default connect(mapStateToProps, null)(App);

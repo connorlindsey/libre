@@ -21,7 +21,6 @@ export default class SignUp extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    // Set loading
     // Hit auth and db to login
     auth
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
@@ -42,13 +41,9 @@ export default class SignUp extends React.Component {
             signUpDate: Date.now()
           })
           .then(() => {
-            // Route to home page
-            this.props.history.push("/");
+            alert("Success");
+            this.props.history.push("/dashboard");
           })
-          .catch(error => {
-            console.error("User registration", error.message);
-            return;
-          });
       })
       .catch(error => {
         console.error("Sign up error: ", error.message);

@@ -2,8 +2,7 @@ import { SIGN_IN, SIGN_OUT, UPDATE_CURRENT_USER } from "../actions/types";
 
 const initialState = {
   user: null,
-  currentUser: null,
-  admin: false
+  currentUser: null
 };
 
 export default (state = initialState, action) => {
@@ -15,15 +14,11 @@ export default (state = initialState, action) => {
     case SIGN_OUT:
       return {
         user: null,
-        currentUser: null,
-        admin: false
+        currentUser: null
       }
     case UPDATE_CURRENT_USER:
-      let admin = action.payload.admin;
-      console.log('Admin', admin);
       return Object.assign({}, state, {
         currentUser: action.payload,
-        admin
       });
     default:
       return state;
