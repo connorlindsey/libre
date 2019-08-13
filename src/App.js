@@ -3,6 +3,9 @@ import { Router, Route, Switch, Redirect } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { ThemeProvider } from "styled-components";
+import Theme from "./styles/theme"
+import "./styles/index.css"
 
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
@@ -36,19 +39,25 @@ class App extends React.Component {
   render() {
     return (
       <Router history={history}>
-        <div className="App">
-          {/* <Navbar /> */}
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={SignUp} />
-            <UserRoute path="/dashboard" component={Dashboard} currentUser={this.props.currentUser} />
-            {/* <UserRoute path="/profile" component={Profile} currentUser={this.props.currentUser} />
+        <ThemeProvider theme={Theme}>
+          <div className="App">
+            {/* <Navbar /> */}
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={SignUp} />
+              <UserRoute
+                path="/dashboard"
+                component={Dashboard}
+                currentUser={this.props.currentUser}
+              />
+              {/* <UserRoute path="/profile" component={Profile} currentUser={this.props.currentUser} />
             <Route path="/order-confirmation" component={OrderConfirmation} />
             <Route path="/email-confirmation" component={ConfirmEmail} /> */}
-            <Route component={Home} />
-          </Switch>
-        </div>
+              <Route component={Home} />
+            </Switch>
+          </div>
+        </ThemeProvider>
       </Router>
     );
   }
@@ -57,11 +66,14 @@ class App extends React.Component {
 App.propTypes = {
   user: PropTypes.object,
   currentUser: PropTypes.object
-}
+};
 
 const mapStateToProps = state => ({
   user: state.auth.user,
   currentUser: state.auth.currentUser
 });
 
-export default connect(mapStateToProps, null)(App);
+export default connect(
+  mapStateToProps,
+  null
+)(App);

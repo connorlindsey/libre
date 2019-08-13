@@ -4,6 +4,24 @@ import { connect } from "react-redux";
 import { signIn, updateUser } from "../../actions/authActions.js";
 import { db, auth, currentUser } from "../../fb";
 import PropTypes from "prop-types";
+import styled from "styled-components"
+
+import Button from "../../components/Button"
+import { Input } from "../../components/Inputs"
+
+const Card = styled.div`
+  position: relative;
+  max-width: 500px;
+  margin: 3rem auto;
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`
+const Label = styled.span`
+  color: ${props => props.theme.grey["500"]};
+`
 
 class Login extends React.Component {
   constructor(props) {
@@ -49,31 +67,29 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div>
-        Welcome Back
-        <div>
-          <form onSubmit={this.handleSubmit}>
-            <label htmlFor="email">Email</label>
-            <input
+      <Card>
+        <h1>Welcome Back</h1>
+        <Link to="/signup">New to Libre? Create an account</Link>
+          <Form onSubmit={this.handleSubmit}>
+            <Label htmlFor="email">EMAIL</Label>
+            <Input
               type="email"
               id="email"
               onChange={this.handleChange}
               value={this.state.email}
               required
             />
-            <label htmlFor="password">Password</label>
-            <input
+            <Label htmlFor="password">PASSWORD</Label>
+            <Input
               type="password"
               id="password"
               onChange={this.handleChange}
               value={this.state.password}
               required
             />
-            <button type="submit">Login</button>
-          </form>
-        </div>
-        <Link to="/">Go home if you dare</Link>
-      </div>
+            <Button type="submit">Login</Button>
+          </Form>
+      </Card>
     );
   }
 }

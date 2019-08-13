@@ -1,6 +1,39 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { db, auth } from "../../fb";
+import styled from "styled-components";
+import Button from "../../components/Button";
+import { Input } from "../../components/Inputs";
+
+const Card = styled.div`
+  position: relative;
+  max-width: 1000px;
+  width: 90%;
+  margin: 3rem auto;
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr;
+  text-align: center;
+
+  p {
+    text-align: left;
+  }
+`;
+
+const Rule = styled.hr`
+  width: 0px;
+  height: 100%;
+  border: 1px solid ${props => props.theme.grey["300"]};
+  border-radius: ${props => props.theme.borderRadius};
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Label = styled.span`
+  color: ${props => props.theme.grey["500"]};
+  text-align: left;
+`;
 
 export default class SignUp extends React.Component {
   constructor(props) {
@@ -43,7 +76,7 @@ export default class SignUp extends React.Component {
           .then(() => {
             alert("Success");
             this.props.history.push("/dashboard");
-          })
+          });
       })
       .catch(error => {
         console.error("Sign up error: ", error.message);
@@ -53,47 +86,56 @@ export default class SignUp extends React.Component {
 
   render() {
     return (
-      <div>
-        You made it to the sign up page
+      <Card>
         <div>
-          <form onSubmit={this.handleSubmit}>
-            <label htmlFor="firstName">First Name</label>
-            <input
+          <h1>Libre</h1>
+          <p>
+            Hi there! Welcome to Libre. The personal organization tool meant to
+            make you feel free. Take notes, track projects, and more across
+            every area of your life. Made with love, we’re happy to share this
+            with you
+          </p>
+        </div>
+        <Rule />
+        <div>
+          <h2>Welcome</h2>
+          <Form onSubmit={this.handleSubmit}>
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
               type="text"
               id="firstName"
               onChange={this.handleChange}
               value={this.state.firstName}
               required
             />
-            <label htmlFor="lastName">Last Name</label>
-            <input
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
               type="text"
               id="lastName"
               onChange={this.handleChange}
               value={this.state.lastName}
               required
             />
-            <label htmlFor="email">Email</label>
-            <input
+            <Label htmlFor="email">Email</Label>
+            <Input
               type="email"
               id="email"
               onChange={this.handleChange}
               value={this.state.email}
               required
             />
-            <label htmlFor="password">Password</label>
-            <input
+            <Label htmlFor="password">Password</Label>
+            <Input
               type="password"
               id="password"
               onChange={this.handleChange}
               value={this.state.password}
               required
             />
-            <button type="submit">Sign Up</button>
-          </form>
+            <Button type="submit">Sign Up</Button>
+          </Form>
         </div>
-        <Link to="/">Go home if you dare</Link>
-      </div>
+      </Card>
     );
   }
 }
