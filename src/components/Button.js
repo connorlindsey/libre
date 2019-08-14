@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import LoadingDots from "./LoadingDots";
 
 const StyledButton = styled.button`
   position: relative;
@@ -8,8 +9,9 @@ const StyledButton = styled.button`
   outline: none;
 	border: none;
   cursor: pointer;
-  margin: 30px auto;
-	padding: 10px 18px;
+  margin: 16px;
+	padding: 8px 18px;
+	height: 36px;
   border-radius: ${props => props.theme.borderRadius};
 	transition: all .3s ease;
 	${props => {
@@ -19,24 +21,27 @@ const StyledButton = styled.button`
 				color: ${props => props.theme.primary["500"]};
 				border: 2px solid ${props => props.theme.primary["500"]};
 
-				&:hover, &:focus {
+				&:hover{
 					color: #FFF;
 					background-color: ${props => props.theme.primary["500"]};
 				}
 			`
 		)
 	}}
-	&:hover,&:focus {
+	&:hover {
 		background-color: ${props => props.theme.primary["600"]};
 	}
-
+	&:active {
+		transform: translateY(1px);
+	}
 `;
 
 export default function Button(props) {
+	const content = (props.loading) ? <LoadingDots /> : props.children;
   return (
 		<StyledButton
 			outline={props.outline}
 			onClick={props.onClick}
-		>{props.children}</StyledButton>
+		>{content}</StyledButton>
 	);
 }

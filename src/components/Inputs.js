@@ -9,6 +9,6 @@ export const Input = styled.input`
 	font-family: 'Nunito Sans';
 	outline: none;
 	border-radius: ${props => props.theme.borderRadius};
-	background-color: ${props => props.theme.grey["100"]};
+	background-color: ${props => props.theme.grey["200"]};
 	border: 1px solid ${props => props.theme.grey["300"]};
 `

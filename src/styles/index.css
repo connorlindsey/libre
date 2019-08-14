@@ -1,7 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito+Sans&display=swap');
 
-body {
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html {
 	font-family: 'Nunito Sans', sans-serif;
+	font-weight: 400;
+	background-color: #FAFBFC;
+	box-sizing: border-box;
 }
 
 a {
@@ -10,4 +18,28 @@ a {
 
 button {
 	font-size: 18px;
+}
+
+/* Typography Helpers */
+.text-center { text-align: center; }
+.fw-light {
+	font-weight: 300;
+}
+.fw-bold {
+	font-weight: 700;
+}
+.f14 {
+	font-size: 14px;
+}
+.f18 {
+	font-size: 18px;
+}
+.f24 {
+	font-size: 24px;
+}
+.f36 {
+	font-size: 36px;
+}
+.f48 {
+	font-size: 48px;
 }

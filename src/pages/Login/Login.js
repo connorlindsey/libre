@@ -4,31 +4,54 @@ import { connect } from "react-redux";
 import { signIn, updateUser } from "../../actions/authActions.js";
 import { db, auth, currentUser } from "../../fb";
 import PropTypes from "prop-types";
-import styled from "styled-components"
+import styled from "styled-components";
 
-import Button from "../../components/Button"
-import { Input } from "../../components/Inputs"
+import Button from "../../components/Button";
+import { Input } from "../../components/Inputs";
+import Logo from "../../assets/libre_logo.svg"
+
+const StyledLogo = styled.img`
+	height: 70px;
+	width: auto;
+`
+
+const Page = styled.div`
+  position: relative;
+  width: 100%;
+`
 
 const Card = styled.div`
   position: relative;
   max-width: 500px;
   margin: 3rem auto;
-`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+`;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-`
+`;
 const Label = styled.span`
   color: ${props => props.theme.grey["500"]};
-`
+  margin-top: 1.5rem;
+`;
+
+const Caption = styled.p`
+  display: inline-block;
+  text-decoration: underline;
+  text-align: center;
+  cursor: pointer;
+`;
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      loading: false
     };
   }
 
@@ -40,6 +63,7 @@ class Login extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    this.setState({ loading: true });
     // Hit auth and db to login
     auth
       .signInWithEmailAndPassword(this.state.email, this.state.password)
@@ -54,22 +78,27 @@ class Login extends React.Component {
             this.props.signIn(doc.data());
           })
           .then(() => {
-            alert("Success");
             this.props.history.push("/dashboard");
+            this.setState({ loading: false });
             return;
           });
       })
       .catch(err => {
         console.error(err.message);
+        this.setState({ loading: false });
         return;
       });
   };
 
   render() {
     return (
-      <Card>
-        <h1>Welcome Back</h1>
-        <Link to="/signup">New to Libre? Create an account</Link>
+      <Page>
+        <Link to="/"><StyledLogo src={Logo} /></Link>
+        <Card>
+          <h1 className="text-center">Welcome Back</h1>
+          <Link to="/signup" className="text-center">
+            New to Libre? Create an account
+          </Link>
           <Form onSubmit={this.handleSubmit}>
             <Label htmlFor="email">EMAIL</Label>
             <Input
@@ -87,9 +116,11 @@ class Login extends React.Component {
               value={this.state.password}
               required
             />
-            <Button type="submit">Login</Button>
+            <Button type="submit" loading={this.state.loading}>Login</Button>
           </Form>
-      </Card>
+          <Caption>Forgot your password?</Caption>
+        </Card>
+      </Page>
     );
   }
 }

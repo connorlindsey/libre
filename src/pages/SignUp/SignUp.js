@@ -1,8 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { db, auth } from "../../fb";
 import styled from "styled-components";
 import Button from "../../components/Button";
 import { Input } from "../../components/Inputs";
+import { Row } from "../../components/Layout";
+import Logo from "../../assets/libre_logo.svg";
+
+const StyledLogo = styled.img`
+  height: 70px;
+  width: auto;
+`;
 
 const Card = styled.div`
   position: relative;
@@ -10,12 +18,16 @@ const Card = styled.div`
   width: 90%;
   margin: 3rem auto;
   display: grid;
-  grid-template-columns: 1fr 20px 1fr;
+  grid-template-columns: 1fr 50px 1fr;
   text-align: center;
 
   p {
-    text-align: left;
+    text-align: center;
   }
+`;
+
+const Text = styled.div`
+  max-width: 400px;
 `;
 
 const Rule = styled.hr`
@@ -28,6 +40,7 @@ const Rule = styled.hr`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  width: 90%;
 `;
 
 const Label = styled.span`
@@ -74,7 +87,6 @@ export default class SignUp extends React.Component {
             signUpDate: Date.now()
           })
           .then(() => {
-            alert("Success");
             this.props.history.push("/dashboard");
           });
       })
@@ -86,56 +98,67 @@ export default class SignUp extends React.Component {
 
   render() {
     return (
-      <Card>
-        <div>
-          <h1>Libre</h1>
-          <p>
-            Hi there! Welcome to Libre. The personal organization tool meant to
-            make you feel free. Take notes, track projects, and more across
-            every area of your life. Made with love, we’re happy to share this
-            with you
-          </p>
-        </div>
-        <Rule />
-        <div>
-          <h2>Welcome</h2>
-          <Form onSubmit={this.handleSubmit}>
-            <Label htmlFor="firstName">First Name</Label>
-            <Input
-              type="text"
-              id="firstName"
-              onChange={this.handleChange}
-              value={this.state.firstName}
-              required
-            />
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input
-              type="text"
-              id="lastName"
-              onChange={this.handleChange}
-              value={this.state.lastName}
-              required
-            />
-            <Label htmlFor="email">Email</Label>
-            <Input
-              type="email"
-              id="email"
-              onChange={this.handleChange}
-              value={this.state.email}
-              required
-            />
-            <Label htmlFor="password">Password</Label>
-            <Input
-              type="password"
-              id="password"
-              onChange={this.handleChange}
-              value={this.state.password}
-              required
-            />
-            <Button type="submit">Sign Up</Button>
-          </Form>
-        </div>
-      </Card>
+      <Label>
+        <Link to="/">
+          <StyledLogo src={Logo} />
+        </Link>
+        <Card>
+          <Text>
+            <h1>Libre</h1>
+            <p>
+              Hi there! Welcome to Libre. The personal organization tool meant
+              to make you feel free. Take notes, track projects, and more across
+              every area of your life. Made with love, we’re happy to share this
+              with you
+            </p>
+          </Text>
+          <Rule />
+          <Label>
+            <h2>Welcome</h2>
+            <Form onSubmit={this.handleSubmit}>
+              <Row>
+                <div>
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  type="text"
+                  id="firstName"
+                  onChange={this.handleChange}
+                  value={this.state.firstName}
+                  required
+                />
+                </div>
+                <div>
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  type="text"
+                  id="lastName"
+                  onChange={this.handleChange}
+                  value={this.state.lastName}
+                  required
+                />
+                </div>
+              </Row>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                type="email"
+                id="email"
+                onChange={this.handleChange}
+                value={this.state.email}
+                required
+              />
+              <Label htmlFor="password">Password</Label>
+              <Input
+                type="password"
+                id="password"
+                onChange={this.handleChange}
+                value={this.state.password}
+                required
+              />
+              <Button type="submit">Sign Up</Button>
+            </Form>
+          </Label>
+        </Card>
+      </Label>
     );
   }
 }
