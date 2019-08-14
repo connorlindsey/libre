@@ -48,6 +48,11 @@ const Label = styled.span`
   text-align: left;
 `;
 
+const Error = styled.p`
+  color: red;
+  text-align: center;
+`
+
 export default class SignUp extends React.Component {
   constructor(props) {
     super(props);
@@ -55,7 +60,9 @@ export default class SignUp extends React.Component {
       firstName: "",
       lastName: "",
       email: "",
-      password: ""
+      password: "",
+      errorMessage: "",
+      loading: false
     };
   }
 
@@ -67,6 +74,7 @@ export default class SignUp extends React.Component {
 
   handleSubmit = event => {
     event.preventDefault();
+    this.setState({ loading: true });
     // Hit auth and db to login
     auth
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
@@ -91,7 +99,7 @@ export default class SignUp extends React.Component {
           });
       })
       .catch(error => {
-        console.error("Sign up error: ", error.message);
+        this.setState({ loading: false, errorMessage: error.message});
         return;
       });
   };
@@ -156,6 +164,7 @@ export default class SignUp extends React.Component {
               />
               <Button type="submit">Sign Up</Button>
             </Form>
+            <Error>{this.state.errorMessage}</Error>
           </Label>
         </Card>
       </Label>

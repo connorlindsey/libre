@@ -45,13 +45,19 @@ const Caption = styled.p`
   cursor: pointer;
 `;
 
+const Error = styled.p`
+  color: red;
+  text-align: center;
+`
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
       password: "",
-      loading: false
+      loading: false,
+      errorMessage: ""
     };
   }
 
@@ -84,8 +90,7 @@ class Login extends React.Component {
           });
       })
       .catch(err => {
-        console.error(err.message);
-        this.setState({ loading: false });
+        this.setState({ loading: false, errorMessage: err.message });
         return;
       });
   };
@@ -119,6 +124,7 @@ class Login extends React.Component {
             <Button type="submit" loading={this.state.loading}>Login</Button>
           </Form>
           <Caption>Forgot your password?</Caption>
+          <Error>{this.state.errorMessage}</Error>
         </Card>
       </Page>
     );

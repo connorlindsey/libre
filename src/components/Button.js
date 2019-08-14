@@ -11,7 +11,6 @@ const StyledButton = styled.button`
   cursor: pointer;
   margin: 16px;
 	padding: 8px 18px;
-	height: 36px;
   border-radius: ${props => props.theme.borderRadius};
 	transition: all .3s ease;
 	${props => {
