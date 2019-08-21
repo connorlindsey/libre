@@ -13,13 +13,6 @@ export const Input = styled.input`
   border: 1px solid ${props => props.theme.grey["300"]};
 `;
 
-export const SmallInput = styled(Input)`
-  height: 14px;
-  line-height: 14px;
-  font-size: 14px;
-  border-radius: 0px;
-`
-
 export const Label = styled.div`
   color: ${props => props.theme.grey["500"]};
   text-align: left;

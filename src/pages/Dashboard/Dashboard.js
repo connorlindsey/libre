@@ -11,6 +11,11 @@ const StyledDashboard = styled.div`
   flex-direction: row;
 `;
 
+const Container = styled.div`
+  padding: 2rem;
+  width: 100%;
+`
+
 export default function Dashboard() {
   const [board, setBoard] = useState(null);
   const main = board === null ? <Summary /> : <Board id={board} />;
@@ -18,7 +23,7 @@ export default function Dashboard() {
     <StyledDashboard>
       <SideNav />
       <BoardList setBoard={setBoard} />
-      {main}
+      <Container>{main}</Container>
     </StyledDashboard>
   );
 }

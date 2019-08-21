@@ -1,24 +1,22 @@
-import React from "react";
-import { Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { signIn, updateUser } from "../../actions/authActions.js";
+import React, { useState } from "react";
+import { Link, Redirect } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { db, auth, currentUser } from "../../fb";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import Button from "../../components/Button";
 import { Input } from "../../components/Inputs";
-import Logo from "../../assets/libre_logo.svg"
+import Logo from "../../assets/libre_logo.svg";
 
 const StyledLogo = styled.img`
-	height: 70px;
-	width: auto;
-`
+  height: 70px;
+  width: auto;
+`;
 
 const Page = styled.div`
   position: relative;
   width: 100%;
-`
+`;
 
 const Card = styled.div`
   position: relative;
@@ -48,31 +46,21 @@ const Caption = styled.p`
 const Error = styled.p`
   color: red;
   text-align: center;
-`
+`;
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "",
-      password: "",
-      loading: false,
-      errorMessage: ""
-    };
-  }
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [toDashboard, setToDashboard] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const dispatch = useDispatch();
 
-  handleChange = event => {
-    this.setState({
-      [event.target.id]: event.target.value
-    });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    this.setState({ loading: true });
-    // Hit auth and db to login
+    setLoading(true);
     auth
-      .signInWithEmailAndPassword(this.state.email, this.state.password)
+      .signInWithEmailAndPassword(email, password)
       .then(cred => {
         return db
           .collection("users")
@@ -80,65 +68,64 @@ class Login extends React.Component {
           .get()
           .then(doc => {
             // Add current user to redux store
-            this.props.updateUser(currentUser);
-            this.props.signIn(doc.data());
+            dispatch({ type: "UPDATE_CURRENT_USER", payload: currentUser });
+            dispatch({ type: "SIGN_IN", payload: doc.data() });
           })
           .then(() => {
-            this.props.history.push("/dashboard");
-            this.setState({ loading: false });
+            setLoading(false);
+            setToDashboard(true);
             return;
           });
       })
       .catch(err => {
-        this.setState({ loading: false, errorMessage: err.message });
+        setLoading(false);
+        setErrorMessage(err.message);
         return;
       });
   };
+  const updateEmail = e => setEmail(e.target.value);
+  const updatePassword = e => setPassword(e.target.value);
 
-  render() {
-    return (
-      <Page>
-        <Link to="/"><StyledLogo src={Logo} /></Link>
-        <Card>
-          <h1 className="text-center">Welcome Back</h1>
-          <Link to="/signup" className="text-center">
-            New to Libre? Create an account
-          </Link>
-          <Form onSubmit={this.handleSubmit}>
-            <Label htmlFor="email">EMAIL</Label>
-            <Input
-              type="email"
-              id="email"
-              onChange={this.handleChange}
-              value={this.state.email}
-              required
-            />
-            <Label htmlFor="password">PASSWORD</Label>
-            <Input
-              type="password"
-              id="password"
-              onChange={this.handleChange}
-              value={this.state.password}
-              required
-            />
-            <Button type="submit" loading={this.state.loading}>Login</Button>
-          </Form>
-          <Caption>Forgot your password?</Caption>
-          <Error>{this.state.errorMessage}</Error>
-        </Card>
-      </Page>
-    );
+  if (toDashboard) {
+    return <Redirect to="/dashboard" />;
   }
-}
 
-Login.propTypes = {
-  signIn: PropTypes.func.isRequired,
-  updateUser: PropTypes.func.isRequired
+  return (
+    <Page>
+      <Link to="/">
+        <StyledLogo src={Logo} />
+      </Link>
+      <Card>
+        <h1 className="text-center">Welcome Back</h1>
+        <Link to="/signup" className="text-center">
+          New to Libre? Create an account
+        </Link>
+        <Form onSubmit={handleSubmit}>
+          <Label htmlFor="email">EMAIL</Label>
+          <Input
+            type="email"
+            id="email"
+            onChange={updateEmail}
+            value={email}
+            required
+          />
+          <Label htmlFor="password">PASSWORD</Label>
+          <Input
+            type="password"
+            id="password"
+            onChange={updatePassword}
+            value={password}
+            required
+          />
+          <Button type="submit" loading={loading}>
+            Login
+          </Button>
+        </Form>
+        <Caption>Forgot your password?</Caption>
+        <Error>{errorMessage}</Error>
+      </Card>
+    </Page>
+  );
 };
 
-export default withRouter(
-  connect(
-    null,
-    { signIn, updateUser }
-  )(Login)
-);
+export default Login;

@@ -28,6 +28,7 @@ const NavLink = styled(Link)`
 const BtnLink = styled(Link)`
   color: inherit;
   text-decoration: none;
+  margin-right: 16px;
 `;
 
 export default function Navbar() {
