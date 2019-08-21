@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { db, auth } from "../../fb";
 import styled from "styled-components";
 import Button from "../../components/Button";
-import { Input } from "../../components/Inputs";
+import { Input, Label } from "../../components/Inputs";
 import { Row } from "../../components/Layout";
 import Logo from "../../assets/libre_logo.svg";
 
@@ -41,11 +41,6 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   width: 90%;
-`;
-
-const Label = styled.span`
-  color: ${props => props.theme.grey["500"]};
-  text-align: left;
 `;
 
 const Error = styled.p`
@@ -92,7 +87,8 @@ export default class SignUp extends React.Component {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             email: this.state.email,
-            signUpDate: Date.now()
+            signUpDate: Date.now(),
+            boards: []
           })
           .then(() => {
             this.props.history.push("/dashboard");

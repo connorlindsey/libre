@@ -11,10 +11,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
 import Dashboard from "./pages/Dashboard/Dashboard";
-// import Profile from "./pages/Profile";
-// import Manager from "./pages/Manager";
-// import OrderConfirmation from "./pages/OrderConfirmation";
-// import ConfirmEmail from "./pages/ConfirmEmail";
+import Profile from "./pages/Profile/Profile";
 
 const history = createBrowserHistory();
 const UserRoute = ({ component: Component, currentUser, ...rest }) => (
@@ -51,9 +48,7 @@ class App extends React.Component {
                 component={Dashboard}
                 currentUser={this.props.currentUser}
               />
-              {/* <UserRoute path="/profile" component={Profile} currentUser={this.props.currentUser} />
-            <Route path="/order-confirmation" component={OrderConfirmation} />
-            <Route path="/email-confirmation" component={ConfirmEmail} /> */}
+              <UserRoute path="/profile" component={Profile} currentUser={this.props.currentUser} />
               <Route component={Home} />
             </Switch>
           </div>

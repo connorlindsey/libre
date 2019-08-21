@@ -20,6 +20,11 @@ button {
 	font-size: 18px;
 }
 
+.ReactModal__Overlay {
+	background-color: hsla(207, 16%, 12%, 70%) !important;
+}
+
+
 /* Typography Helpers */
 .text-center { text-align: center; }
 .fw-light {

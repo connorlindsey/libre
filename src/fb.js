@@ -26,4 +26,4 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-export { auth, db, storage, currentUser };
+export { auth, db, storage, currentUser, firebase };
