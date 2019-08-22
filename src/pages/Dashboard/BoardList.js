@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FiActivity, FiLayout, FiPlusCircle, FiX } from "react-icons/fi";
+import { useDocument } from "react-firebase-hooks/firestore";
 import Modal from "react-modal";
 import { Input, Label } from "../../components/Inputs";
 import Button from "../../components/Button";
@@ -8,6 +9,7 @@ import { db, auth, firebase } from "../../fb";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import uuidv4 from "uuid";
+import LoadingDots from "../../components/LoadingDots";
 
 const StyledList = styled.div`
   border-right: 1px solid ${props => props.theme.grey["300"]};
@@ -85,6 +87,12 @@ const BoardItem = styled(StyledItem)`
 Modal.setAppElement("#root");
 
 const BoardList = props => {
+  const [value, loading, error] = useDocument(
+    db.doc(`users/${props.currentUser.uid}`),
+    {
+      snapshotListenOptions: { includeMetadataChanges: true }
+    }
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [boardName, setBoardName] = useState("");
 
@@ -147,6 +155,16 @@ const BoardList = props => {
     props.setBoard(id);
   };
 
+  // Show error or loading components
+  if (error || loading) {
+    return (
+      <div>
+        {error && <strong>Error: {JSON.stringify(error)}</strong>}
+        {loading && <LoadingDots dark />}
+      </div>
+    );
+  }
+
   return (
     <StyledList>
       <Summary onClick={() => updateBoard(null)}>
@@ -172,7 +190,7 @@ const BoardList = props => {
           </form>
         </StyledModal>
       </StyledItem>
-      {props.user.boards.map(board => {
+      {value.data().boards.map(board => {
         return (
           <BoardItem key={board.id} onClick={() => updateBoard(board.id)}>
             {board.name}

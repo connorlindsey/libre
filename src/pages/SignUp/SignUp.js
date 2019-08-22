@@ -129,6 +129,7 @@ export default class SignUp extends React.Component {
                   onChange={this.handleChange}
                   value={this.state.firstName}
                   required
+                  autoFocus
                 />
                 </div>
                 <div>

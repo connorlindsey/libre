@@ -108,6 +108,7 @@ const Login = () => {
             onChange={updateEmail}
             value={email}
             required
+            autoFocus
           />
           <Label htmlFor="password">PASSWORD</Label>
           <Input
