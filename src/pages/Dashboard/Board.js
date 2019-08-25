@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { useSelector } from "react-redux";
 import { db } from "../../fb";
-import { FiPlusCircle, FiTrash, FiFilter, FiChevronDown } from "react-icons/fi";
+import {
+  FiPlusCircle,
+  FiTrash,
+  FiFilter,
+  FiChevronDown,
+  FiMoreHorizontal
+} from "react-icons/fi";
 import uuidv4 from "uuid";
 
 import LoadingDots from "../../components/LoadingDots";
 import { Input } from "../../components/Inputs";
+import { Row } from "../../components/Layout";
 import Button from "../../components/Button";
 
 const BoardTitle = styled.h1`
@@ -125,7 +132,7 @@ const CommandBar = styled.div`
 `;
 
 const SearchBar = styled(Input)`
-  height: 14px;
+  height: 24px;
   line-height: 14px;
   font-size: 14px;
   border-radius: 30px;
@@ -143,14 +150,39 @@ const Description = styled.p`
   }
 `;
 
+const Menu = styled.div`
+  position: absolute;
+  top: 50px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  border: 1px solid ${props => props.theme.grey["300"]};
+  box-shadow: ${props => props.theme.elevation3};
+`;
+
+const MenuItem = styled.div`
+  font-size: 18px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+`;
+
 const Board = ({ id }) => {
+  const [boardMenu, setBoardMenu] = useState(false);
   const [values, setValues] = useState({});
   const [showEdits, setShowEdits] = useState({});
   const [tmpTitle, setTmptitle] = useState("");
+  const user = useSelector(state => state.auth.user);
+  const userId = useSelector(state => state.auth.currentUser.uid);
   const [value, loading, error] = useDocument(db.doc(`boards/${id}`), {
     snapshotListenOptions: { includeMetadataChanges: true }
   });
+  const refBoardMenu = useRef(null);
   // Show error or loading components
+  if (!value) return <div>Board deleted successfully</div>;
   if (error || loading) {
     return (
       <div>
@@ -161,25 +193,85 @@ const Board = ({ id }) => {
   }
 
   // Board Methods
-  const updateBoardName = event => {
-  //   event.preventDefault();
-  //   const name = tmpTitle;
-  //   // Add to firebase
-  //   db.collection("boards")
-  //     .doc(id)
-  //     .update({
-  //       name
-  //     })
-  //     .then(function() {
-  //       console.log("Board name changed successfully!");
-  //       editOff();
-  //     })
-  //     .catch(function(error) {
-  //       console.error("Board name change failed: ", error);
-  //     });
-  //     // Update user boards
-  //     db.collection("users").doc(userId).update()
+  const showBoardMenu = () => {
+    if (boardMenu === false) {
+      setBoardMenu(true);
+      document.addEventListener("click", closeBoardMenu);
+    }
   };
+  const closeBoardMenu = event => {
+    if (refBoardMenu && !refBoardMenu.current.contains(event.target)) {
+      setBoardMenu(false);
+      document.removeEventListener("click", closeBoardMenu);
+      // }
+    }
+  };
+  const updateBoardName = event => {
+    event.preventDefault();
+    const name = tmpTitle;
+    // Add to firebase
+    db.collection("boards")
+      .doc(id)
+      .update({
+        name
+      })
+      .then(() => {
+        console.log("Board name changed successfully!");
+        editOff();
+      })
+      .catch(error => {
+        console.error("Board name change failed: ", error);
+      });
+    // Update user boards
+    let boards = user.boards;
+    boards.forEach(board => {
+      if (board.id === id) {
+        board.name = name;
+      }
+    });
+    db.collection("users")
+      .doc(userId)
+      .update({ boards });
+  };
+  const updateBoardDescription = event => {
+    event.preventDefault();
+    const description = tmpTitle;
+    // Add to firebase
+    db.collection("boards")
+      .doc(id)
+      .update({
+        description
+      })
+      .then(() => {
+        console.log("Board description changed successfully!");
+        editOff();
+      })
+      .catch(error => {
+        console.error("Board description change failed: ", error);
+      });
+  };
+  const deleteBoard = event => {
+    const bool = window.confirm("Are you sure you want to delete this board?");
+    if (bool) {
+      db.collection("boards")
+        .doc(id)
+        .delete()
+        .then(() => {
+          console.log("Document successfully deleted!");
+          let boards = user.boards.filter(board => board.id !== id);
+          db.collection("users")
+            .doc(userId)
+            .update({
+              boards
+            })
+            .then(() => console.log("Updated user"));
+        })
+        .catch(function(error) {
+          console.error("Error removing document: ", error);
+        });
+    }
+  };
+
   // Item methods
   const updateNewItem = e => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -208,13 +300,12 @@ const Board = ({ id }) => {
       })
       .then(function() {
         console.log("Item successfully added!");
-        setValues({});
       })
       .catch(function(error) {
         console.error("Error adding item: ", error);
       });
+      setValues({});
   };
-
   const deleteItem = (listId, itemId) => {
     let lists = value.data().lists;
     lists.forEach(list => {
@@ -299,27 +390,53 @@ const Board = ({ id }) => {
 
   return (
     <div>
-      {showEdits["boardName"] === true ? (
-        <form onSubmit={updateBoardName}>
+      <Row>
+        {/* Board Name */}
+        {showEdits["boardName"] === true ? (
+          <form onSubmit={updateBoardName}>
+            <TitleInput
+              placeholder={value.data().name}
+              onChange={updateListName}
+              onBlur={editOff}
+              autoFocus
+            />
+          </form>
+        ) : (
+          <BoardTitle id="boardName" onClick={editOn}>
+            {value.data().name}
+          </BoardTitle>
+        )}
+        <FiMoreHorizontal className="icon" onClick={showBoardMenu} />
+      </Row>
+      {boardMenu ? (
+        <Menu ref={refBoardMenu}>
+          <MenuItem onClick={deleteBoard}>
+            <FiTrash />
+            Delete Board
+          </MenuItem>
+        </Menu>
+      ) : null}
+      {/* Board Description */}
+      {showEdits["boardDescription"] === true ? (
+        <form onSubmit={updateBoardDescription}>
           <TitleInput
-            placeholder={value.data().name}
+            placeholder={
+              value.data().description || "Enter the board description"
+            }
             onChange={updateListName}
             onBlur={editOff}
             autoFocus
           />
         </form>
       ) : (
-        <BoardTitle id="boardName" onClick={editOn}>
-          {value.data().name}
-        </BoardTitle>
+        <Description id="boardDescription" onClick={editOn}>
+          {value.data().description}
+        </Description>
       )}
-      <Description id="boardDescription" onClick={editOn}>
-        Add a board description
-      </Description>
       <CommandBar>
         <Button onClick={addList}>New List</Button>
         <SearchBar placeholder="Search board" />
-        <FiFilter />
+        <FiFilter className="icon" />
       </CommandBar>
       <div>
         {value.data().lists.map(list => {

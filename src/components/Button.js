@@ -9,15 +9,14 @@ const StyledButton = styled.button`
   outline: none;
 	border: none;
   cursor: pointer;
-  margin: 16px 0;
-	padding: 8px 18px;
-	height: 37px;
-  border-radius: ${props => props.theme.borderRadius};
+	margin: 16px 0;
+	padding: 4px 12px;
+	height: 34px;
+  border-radius: 17px;
 	transition: all .3s ease;
 	display: inline-flex;
 	align-content: center;
 	justify-content: center;
-	text-decoration: none !important;
 
 	${props => {
 		return (
