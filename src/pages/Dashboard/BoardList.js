@@ -14,6 +14,7 @@ import LoadingDots from "../../components/LoadingDots";
 const StyledList = styled.div`
   border-right: 1px solid ${props => props.theme.grey["300"]};
   height: 100vh;
+  max-width: 180px;
 
   svg {
     height: 20px;
@@ -78,6 +79,11 @@ const StyledX = styled(FiX)`
 
 const BoardItem = styled(StyledItem)`
   cursor: pointer;
+  text-overflow: ellipsis;
+
+  /* Needed to make it work */
+  overflow: hidden;
+  white-space: nowrap;
 
   &:hover {
     background-color: ${props => props.theme.grey["200"]};

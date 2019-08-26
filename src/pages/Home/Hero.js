@@ -48,7 +48,7 @@ export default function Hero() {
           and measure your success
         </Text>
 
-        <Input placeholder="Enter your email" />
+        <Input placeholder="Enter your email" style={{ marginRight:  `1rem`}}/>
         <Link to="/signup">
           <Button>Get Started</Button>
         </Link>
