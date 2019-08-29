@@ -18,11 +18,16 @@ const Container = styled.div`
 
 export default function Dashboard() {
   const [board, setBoard] = useState(null);
-  const main = board === null ? <Summary /> : <Board id={board} />;
+  
+  const resetBoard = () => {
+    setBoard(null);
+  }
+  
+  const main = board === null ? <Summary /> : <Board id={board} resetBoard={resetBoard}  />;
   return (
     <StyledDashboard>
       <SideNav />
-      <BoardList setBoard={setBoard} />
+      <BoardList setBoard={setBoard}/>
       <Container>{main}</Container>
     </StyledDashboard>
   );

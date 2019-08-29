@@ -90,6 +90,11 @@ const BoardItem = styled(StyledItem)`
   }
 `;
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`
+
 Modal.setAppElement("#root");
 
 const BoardList = props => {
@@ -100,17 +105,18 @@ const BoardList = props => {
     }
   );
   const [isOpen, setIsOpen] = useState(false);
-  const [boardName, setBoardName] = useState("");
+  const [values, setValues] = useState({});
 
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
-  const handleChange = event => setBoardName(event.target.value);
+  const handleChange = e => setValues({ ...values, [e.target.name]: e.target.value });
 
   const createBoard = event => {
     event.preventDefault();
     db.collection("boards")
       .add({
-        name: boardName,
+        name: values.boardName,
+        description: values.boardDescription,
         lists: [
           {
             id: uuidv4(),
@@ -133,7 +139,6 @@ const BoardList = props => {
             items: [
               { id: uuidv4(), name: "Item 1", status: null, date: null },
               { id: uuidv4(), name: "Item 2", status: null, date: null },
-              { id: uuidv4(), name: "Item 3", status: null, date: null }
             ]
           }
         ]
@@ -141,7 +146,7 @@ const BoardList = props => {
       .then(docRef => {
         const board = {
           id: docRef.id,
-          name: boardName
+          name: values.boardName
         };
         db.collection("users")
           .doc(auth.currentUser.uid)
@@ -149,6 +154,7 @@ const BoardList = props => {
             boards: firebase.firestore.FieldValue.arrayUnion(board)
           })
           .then(() => {
+            setValues({});
             closeModal();
           });
       })
@@ -184,16 +190,23 @@ const BoardList = props => {
         <StyledModal isOpen={isOpen} onRequestClose={closeModal}>
           <StyledX onClick={closeModal} />
           <h3 className="f24">Create Board</h3>
-          <form onSubmit={createBoard}>
-            <Label>Board Name</Label>
+          <Form onSubmit={createBoard}>
+            <Label htmlFor="boardName">Board Name</Label>
             <Input
-              value={boardName}
+              value={values.boardName}
               name="boardName"
               onChange={handleChange}
               placeholder="Create a TARDIS"
             />
+            <Label htmlFor="boardDescription">Description</Label>
+            <Input
+              value={values.boardDescription}
+              name="boardDescription"
+              onChange={handleChange}
+              placeholder="Here are the steps..."
+            />
             <Button type="submit">Submit</Button>
-          </form>
+          </Form>
         </StyledModal>
       </StyledItem>
       {value.data().boards.map(board => {

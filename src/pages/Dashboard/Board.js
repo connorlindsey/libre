@@ -47,7 +47,7 @@ const ListRow = styled.div`
 `;
 
 const ListItem = styled.div`
-  margin: 0px 0px 1px 1rem;
+  margin: 0px 0px 2px 1rem;
   width: 100%;
   padding: 0.5rem 1rem;
   border-left: 2px solid
@@ -71,15 +71,26 @@ const Dropdown = styled(FiChevronDown)`
   }
 `;
 
-const InputRow = styled.div`
-  margin: 0px 0px 1px calc(18px + 1rem);
-  padding: 0.5rem 1rem;
-  border-left: 2px solid
-    ${props => props.theme[props.color]["500"] || props.theme.primary["500"]};
-  background: ${props => props.theme.grey["200"]};
+const HiddenDropdown = styled(Dropdown)`
+  cursor: default;
+  ${ListRow}:hover & {
+    color: ${props => props.theme.grey["100"]};
+  }
+`;
+
+const ListTitleRow = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-content: center;
+  align-items: center;
+`;
+
+const TitleDropdown = styled(Dropdown)`
+  ${ListTitleRow}:hover & {
+    display: inline-block;
+    color: ${props => props.theme.grey["800"]};
+  }
 `;
 
 const SmallInput = styled(Input)`
@@ -170,8 +181,9 @@ const MenuItem = styled.div`
   cursor: pointer;
 `;
 
-const Board = ({ id }) => {
+const Board = ({ id, resetBoard }) => {
   const [boardMenu, setBoardMenu] = useState(false);
+  const [menus, setMenus] = useState({});
   const [values, setValues] = useState({});
   const [showEdits, setShowEdits] = useState({});
   const [tmpTitle, setTmptitle] = useState("");
@@ -180,7 +192,7 @@ const Board = ({ id }) => {
   const [value, loading, error] = useDocument(db.doc(`boards/${id}`), {
     snapshotListenOptions: { includeMetadataChanges: true }
   });
-  const refBoardMenu = useRef(null);
+  const refMenu = useRef(null);
   // Show error or loading components
   if (!value) return <div>Board deleted successfully</div>;
   if (error || loading) {
@@ -200,10 +212,9 @@ const Board = ({ id }) => {
     }
   };
   const closeBoardMenu = event => {
-    if (refBoardMenu && !refBoardMenu.current.contains(event.target)) {
+    if (refMenu && !refMenu.current.contains(event.target)) {
       setBoardMenu(false);
       document.removeEventListener("click", closeBoardMenu);
-      // }
     }
   };
   const updateBoardName = event => {
@@ -240,7 +251,7 @@ const Board = ({ id }) => {
     db.collection("boards")
       .doc(id)
       .update({
-        description
+        description: description
       })
       .then(() => {
         console.log("Board description changed successfully!");
@@ -253,6 +264,7 @@ const Board = ({ id }) => {
   const deleteBoard = event => {
     const bool = window.confirm("Are you sure you want to delete this board?");
     if (bool) {
+      resetBoard();
       db.collection("boards")
         .doc(id)
         .delete()
@@ -263,8 +275,7 @@ const Board = ({ id }) => {
             .doc(userId)
             .update({
               boards
-            })
-            .then(() => console.log("Updated user"));
+            });
         })
         .catch(function(error) {
           console.error("Error removing document: ", error);
@@ -304,7 +315,7 @@ const Board = ({ id }) => {
       .catch(function(error) {
         console.error("Error adding item: ", error);
       });
-      setValues({});
+    setValues({});
   };
   const deleteItem = (listId, itemId) => {
     let lists = value.data().lists;
@@ -406,10 +417,13 @@ const Board = ({ id }) => {
             {value.data().name}
           </BoardTitle>
         )}
-        <FiMoreHorizontal className="icon" onClick={showBoardMenu} />
+        <FiMoreHorizontal
+          className="icon"
+          onClick={() => setMenus({ board: true })}
+        />
       </Row>
-      {boardMenu ? (
-        <Menu ref={refBoardMenu}>
+      {menus.board ? (
+        <Menu ref={refMenu}>
           <MenuItem onClick={deleteBoard}>
             <FiTrash />
             Delete Board
@@ -452,14 +466,27 @@ const Board = ({ id }) => {
                   />
                 </form>
               ) : (
-                <ListTitle
-                  color={list.color}
-                  id={`title-${list.id}`}
-                  onClick={editOn}
-                >
-                  {list.name}
-                </ListTitle>
+                <ListTitleRow>
+                  <TitleDropdown
+                    onClick={() => setMenus({ [list.id]: true })}
+                  />
+                  <ListTitle
+                    color={list.color}
+                    id={`title-${list.id}`}
+                    onClick={editOn}
+                  >
+                    {list.name}
+                  </ListTitle>
+                </ListTitleRow>
               )}
+              {menus[list.id] ? (
+                <Menu ref={refMenu}>
+                  <MenuItem onClick={deleteBoard}>
+                    <FiTrash />
+                    Delete Board
+                  </MenuItem>
+                </Menu>
+              ) : null}
               {list.items.map(item => {
                 return (
                   <ListRow key={item.id}>
@@ -472,18 +499,21 @@ const Board = ({ id }) => {
                   </ListRow>
                 );
               })}
-              <InputRow color={list.color}>
-                <form onSubmit={addItem(list.id)}>
-                  <SmallInput
-                    value={values[list.id]}
-                    name={list.id}
-                    id={list.id}
-                    onChange={updateNewItem}
-                    placeholder="New item"
-                  />
-                </form>
-                <Plus onClick={() => addItem(list.id)} />
-              </InputRow>
+              <ListRow>
+                <HiddenDropdown />
+                <ListItem color={list.color}>
+                  <form onSubmit={addItem(list.id)}>
+                    <SmallInput
+                      value={values[list.id]}
+                      name={list.id}
+                      id={list.id}
+                      onChange={updateNewItem}
+                      placeholder="New item"
+                    />
+                  </form>
+                  <Plus onClick={() => addItem(list.id)} />
+                </ListItem>
+              </ListRow>
             </List>
           );
         })}
