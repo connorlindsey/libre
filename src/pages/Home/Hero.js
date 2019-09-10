@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Input } from "../../components/Inputs";
 import { Row } from "../../components/Layout";
 import Button from "../../components/Button";
-import Toucan from "../../assets/Toucan.png";
+import Rocket from "../../assets/rocketship.svg";
 
 const ColorH = styled.span`
   color: ${props => props.theme.primary["500"]};
@@ -53,7 +53,7 @@ export default function Hero() {
           <Button>Get Started</Button>
         </Link>
       </div>
-      <Img src={Toucan} alt="Vector art of a toucan" />
+      <Img src={Rocket} alt="Vector art of a rocket over a mountain" />
     </StyledRow>
   );
 }

@@ -16,7 +16,7 @@ const StyledFooter = styled.footer`
   flex-direction: role;
   justify-content: space-around;
   align-items: baseline;
-  padding: 3rem 0 1rem 0;
+  padding: 1.5rem 0 1rem 0;
   background-color: ${props => props.theme.grey["200"]};
   color: ${props => props.theme.grey["900"]};
 `
