@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { useSelector } from "react-redux";
@@ -16,6 +16,19 @@ import LoadingDots from "../../components/LoadingDots";
 import { Input } from "../../components/Inputs";
 import { Row } from "../../components/Layout";
 import Button from "../../components/Button";
+
+const Page = styled.div`
+  max-height: 100vh;
+  overflow: hidden;
+
+  &:hover, &:focus {
+    overflow-y: auto;
+  }
+
+  ::-webkit-scrollbar {
+    margin-left: 10px;
+  }
+`
 
 const BoardTitle = styled.h1`
   display: inline-block;
@@ -194,7 +207,11 @@ const Board = ({ id, resetBoard }) => {
   });
   const refMenu = useRef(null);
   // Show error or loading components
-  if (!value) return <div>Board deleted successfully</div>;
+
+  useEffect(() => {
+    document.body.style.overflowY = 'hidden';
+  });
+
   if (error || loading) {
     return (
       <div>
@@ -205,12 +222,12 @@ const Board = ({ id, resetBoard }) => {
   }
 
   // Board Methods
-  const showBoardMenu = () => {
-    if (boardMenu === false) {
-      setBoardMenu(true);
-      document.addEventListener("click", closeBoardMenu);
-    }
-  };
+  // const showBoardMenu = () => {
+  //   if (boardMenu === false) {
+  //     setBoardMenu(true);
+  //     document.addEventListener("click", closeBoardMenu);
+  //   }
+  // };
   const closeBoardMenu = event => {
     if (refMenu && !refMenu.current.contains(event.target)) {
       setBoardMenu(false);
@@ -400,7 +417,7 @@ const Board = ({ id, resetBoard }) => {
   };
 
   return (
-    <div>
+    <Page>
       <Row>
         {/* Board Name */}
         {showEdits["boardName"] === true ? (
@@ -518,7 +535,7 @@ const Board = ({ id, resetBoard }) => {
           );
         })}
       </div>
-    </div>
+    </Page>
   );
 };
 

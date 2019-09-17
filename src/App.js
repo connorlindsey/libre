@@ -37,8 +37,7 @@ class App extends React.Component {
     return (
       <Router history={history}>
         <ThemeProvider theme={Theme}>
-          <div className="App">
-            {/* <Navbar /> */}
+          <div id="App">
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/login" component={Login} />
