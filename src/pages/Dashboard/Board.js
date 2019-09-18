@@ -26,7 +26,7 @@ const Page = styled.div`
   }
 
   ::-webkit-scrollbar {
-    margin-left: 10px;
+    width: 0px;
   }
 `
 
@@ -156,7 +156,7 @@ const CommandBar = styled.div`
 `;
 
 const SearchBar = styled(Input)`
-  height: 24px;
+  height: 30px;
   line-height: 14px;
   font-size: 14px;
   border-radius: 30px;
@@ -222,12 +222,12 @@ const Board = ({ id, resetBoard }) => {
   }
 
   // Board Methods
-  // const showBoardMenu = () => {
-  //   if (boardMenu === false) {
-  //     setBoardMenu(true);
-  //     document.addEventListener("click", closeBoardMenu);
-  //   }
-  // };
+  const showBoardMenu = () => {
+    if (boardMenu === false) {
+      setBoardMenu(true);
+      document.addEventListener("click", closeBoardMenu);
+    }
+  };
   const closeBoardMenu = event => {
     if (refMenu && !refMenu.current.contains(event.target)) {
       setBoardMenu(false);
@@ -332,7 +332,7 @@ const Board = ({ id, resetBoard }) => {
       .catch(function(error) {
         console.error("Error adding item: ", error);
       });
-    setValues({});
+      setValues({ ...values, [listId]: ""})
   };
   const deleteItem = (listId, itemId) => {
     let lists = value.data().lists;
@@ -374,7 +374,7 @@ const Board = ({ id, resetBoard }) => {
           type: "date"
         }
       ],
-      items: [{ id: uuidv4(), name: "Item 1", status: null, date: null }]
+      items: [{ id: uuidv4(), name: "Item 1", status: 'In-Progress', date: Date.now() }]
     };
     let lists = value.data().lists;
     lists.push(list);
@@ -521,14 +521,14 @@ const Board = ({ id, resetBoard }) => {
                 <ListItem color={list.color}>
                   <form onSubmit={addItem(list.id)}>
                     <SmallInput
-                      value={values[list.id]}
+                      value={values[list.id] || ""}
                       name={list.id}
                       id={list.id}
                       onChange={updateNewItem}
                       placeholder="New item"
                     />
                   </form>
-                  <Plus onClick={() => addItem(list.id)} />
+                  <Plus onClick={addItem(list.id)} />
                 </ListItem>
               </ListRow>
             </List>

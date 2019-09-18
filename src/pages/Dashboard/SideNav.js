@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Logo from "../../assets/libre_logo.svg";
 // import me from "../../assets/me.JPG";
-import { FiHelpCircle, FiUser, FiLogOut } from "react-icons/fi";
+import { FiHelpCircle, FiUser, FiLogOut, FiLayout } from "react-icons/fi";
 import { auth } from "../../fb";
 import { useDispatch } from "react-redux";
 
@@ -69,6 +69,9 @@ const SideNav = props => {
       <Divider />
       <Link to="/">
         <FiHelpCircle />
+      </Link>
+      <Link to="/dashboard">
+        <FiLayout />
       </Link>
       <Link to="/profile">
         <FiUser />

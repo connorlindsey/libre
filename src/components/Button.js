@@ -10,8 +10,8 @@ const StyledButton = styled.button`
 	border: none;
   cursor: pointer;
 	margin: 16px 0;
-	padding: 4px 12px;
-	height: 34px;
+	padding: 2px 12px;
+	height: 30px;
   border-radius: 17px;
 	transition: all .3s ease;
 	display: inline-flex;
