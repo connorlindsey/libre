@@ -24,7 +24,7 @@ const StyledList = styled.div`
 `;
 
 const StyledItem = styled.div`
-  font-size: 24px;
+  font-size: 20px;
   padding: 0.5rem 1rem;
   display: flex;
   flex-direction: row;
@@ -79,9 +79,6 @@ const StyledX = styled(FiX)`
 
 const BoardItem = styled(StyledItem)`
   cursor: pointer;
-  text-overflow: ellipsis;
-
-  /* Needed to make it work */
   overflow: hidden;
   white-space: nowrap;
 

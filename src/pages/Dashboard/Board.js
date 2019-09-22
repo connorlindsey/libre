@@ -1,34 +1,31 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDocument } from "react-firebase-hooks/firestore";
 import { useSelector } from "react-redux";
 import { db } from "../../fb";
-import {
-  FiPlusCircle,
-  FiTrash,
-  FiFilter,
-  FiChevronDown,
-  FiMoreHorizontal
-} from "react-icons/fi";
+import { FiPlusCircle, FiTrash, FiFilter, FiChevronDown } from "react-icons/fi";
 import uuidv4 from "uuid";
 
 import LoadingDots from "../../components/LoadingDots";
 import { Input } from "../../components/Inputs";
 import { Row } from "../../components/Layout";
 import Button from "../../components/Button";
+// import Dropdown from "../../components/Dropdown";
 
 const Page = styled.div`
   max-height: 100vh;
   overflow: hidden;
+  padding-bottom: 5rem;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     overflow-y: auto;
   }
 
   ::-webkit-scrollbar {
     width: 0px;
   }
-`
+`;
 
 const BoardTitle = styled.h1`
   display: inline-block;
@@ -71,7 +68,7 @@ const ListItem = styled.div`
   justify-content: space-between;
 `;
 
-const Dropdown = styled(FiChevronDown)`
+const StyledDropdown = styled(FiChevronDown)`
   color: ${props => props.theme.grey["100"]};
   height: 24px;
   width: 24px;
@@ -84,7 +81,7 @@ const Dropdown = styled(FiChevronDown)`
   }
 `;
 
-const HiddenDropdown = styled(Dropdown)`
+const HiddenDropdown = styled(StyledDropdown)`
   cursor: default;
   ${ListRow}:hover & {
     color: ${props => props.theme.grey["100"]};
@@ -99,7 +96,20 @@ const ListTitleRow = styled.div`
   align-items: center;
 `;
 
-const TitleDropdown = styled(Dropdown)`
+// const TitleDropdown = styled(StyledDropdown)`
+//   ${ListTitleRow}:hover & {
+//     display: inline-block;
+//     color: ${props => props.theme.grey["800"]};
+//   }
+// `;
+
+const ListDelete = styled(FiTrash)`
+  color: ${props => props.theme.grey["100"]};
+  height: 24px;
+  width: 24px;
+  flex-basis: 20px;
+  cursor: pointer;
+
   ${ListTitleRow}:hover & {
     display: inline-block;
     color: ${props => props.theme.grey["800"]};
@@ -136,6 +146,7 @@ const Plus = styled(FiPlusCircle)`
     color: ${props => props.theme.primary["600"]};
   }
 `;
+
 const Trash = styled(FiTrash)`
   color: ${props => props.theme.grey["300"]};
   stroke-width: 2px;
@@ -174,29 +185,29 @@ const Description = styled.p`
   }
 `;
 
-const Menu = styled.div`
-  position: absolute;
-  top: 50px;
-  right: 40px;
-  display: flex;
-  flex-direction: column;
-  z-index: 2;
-  border: 1px solid ${props => props.theme.grey["300"]};
-  box-shadow: ${props => props.theme.elevation3};
-`;
+// const Menu = styled.div`
+//   position: absolute;
+//   top: 50px;
+//   right: 40px;
+//   display: flex;
+//   flex-direction: column;
+//   z-index: 2;
+//   border: 1px solid ${props => props.theme.grey["300"]};
+//   box-shadow: ${props => props.theme.elevation3};
+// `;
 
-const MenuItem = styled.div`
-  font-size: 18px;
-  padding: 0.5rem 1rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  cursor: pointer;
-`;
+// const MenuItem = styled.div`
+//   font-size: 18px;
+//   padding: 0.5rem 1rem;
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   cursor: pointer;
+// `;
 
 const Board = ({ id, resetBoard }) => {
-  const [boardMenu, setBoardMenu] = useState(false);
-  const [menus, setMenus] = useState({});
+  // const [boardMenu, setBoardMenu] = useState(false);
+  // const [menus, setMenus] = useState({});
   const [values, setValues] = useState({});
   const [showEdits, setShowEdits] = useState({});
   const [tmpTitle, setTmptitle] = useState("");
@@ -205,11 +216,11 @@ const Board = ({ id, resetBoard }) => {
   const [value, loading, error] = useDocument(db.doc(`boards/${id}`), {
     snapshotListenOptions: { includeMetadataChanges: true }
   });
-  const refMenu = useRef(null);
+  // const refMenu = useRef(null);
   // Show error or loading components
 
   useEffect(() => {
-    document.body.style.overflowY = 'hidden';
+    document.body.style.overflowY = "hidden";
   });
 
   if (error || loading) {
@@ -222,18 +233,6 @@ const Board = ({ id, resetBoard }) => {
   }
 
   // Board Methods
-  const showBoardMenu = () => {
-    if (boardMenu === false) {
-      setBoardMenu(true);
-      document.addEventListener("click", closeBoardMenu);
-    }
-  };
-  const closeBoardMenu = event => {
-    if (refMenu && !refMenu.current.contains(event.target)) {
-      setBoardMenu(false);
-      document.removeEventListener("click", closeBoardMenu);
-    }
-  };
   const updateBoardName = event => {
     event.preventDefault();
     const name = tmpTitle;
@@ -332,7 +331,7 @@ const Board = ({ id, resetBoard }) => {
       .catch(function(error) {
         console.error("Error adding item: ", error);
       });
-      setValues({ ...values, [listId]: ""})
+    setValues({ ...values, [listId]: "" });
   };
   const deleteItem = (listId, itemId) => {
     let lists = value.data().lists;
@@ -374,7 +373,14 @@ const Board = ({ id, resetBoard }) => {
           type: "date"
         }
       ],
-      items: [{ id: uuidv4(), name: "Item 1", status: 'In-Progress', date: Date.now() }]
+      items: [
+        {
+          id: uuidv4(),
+          name: "Item 1",
+          status: "In-Progress",
+          date: Date.now()
+        }
+      ]
     };
     let lists = value.data().lists;
     lists.push(list);
@@ -415,6 +421,42 @@ const Board = ({ id, resetBoard }) => {
         console.error("Title change failed: ", error);
       });
   };
+  const deleteList = listId => {
+    const bool = window.confirm("Are you sure you want to delete this list?");
+    if (!bool) return;
+    let lists = value.data().lists.filter(list => list.id !== listId);
+    db.collection("boards")
+      .doc(id)
+      .update({
+        lists
+      })
+      .then(function() {
+        console.log("List successfully deleted!");
+      })
+      .catch(function(error) {
+        console.error("Error removing list: ", error);
+      });
+  }
+
+  // Menu Methods
+  // const showMenu = key => {
+  //   console.log("In show menu");
+  //   console.log(menus);
+  //   if (!(key in menus) || menus[key] === false) {
+  //     console.log("Menu is false. Key: " + key);
+  //     setMenus({ [key]: true, ...menus });
+  //     document.addEventListener("click", closeMenu);
+  //     console.log(refMenu);
+  //     console.log("Menus", menus);
+  //   }
+  // };
+  // const closeMenu = event => {
+  //   if (refMenu && !refMenu.current.contains(event.target)) {
+  //     if (refMenu.current)
+  //     setMenus({...menus, [key]: false});
+  //     document.removeEventListener("click", closeMenu);
+  //   }
+  // };
 
   return (
     <Page>
@@ -434,19 +476,7 @@ const Board = ({ id, resetBoard }) => {
             {value.data().name}
           </BoardTitle>
         )}
-        <FiMoreHorizontal
-          className="icon"
-          onClick={() => setMenus({ board: true })}
-        />
       </Row>
-      {menus.board ? (
-        <Menu ref={refMenu}>
-          <MenuItem onClick={deleteBoard}>
-            <FiTrash />
-            Delete Board
-          </MenuItem>
-        </Menu>
-      ) : null}
       {/* Board Description */}
       {showEdits["boardDescription"] === true ? (
         <form onSubmit={updateBoardDescription}>
@@ -468,6 +498,7 @@ const Board = ({ id, resetBoard }) => {
         <Button onClick={addList}>New List</Button>
         <SearchBar placeholder="Search board" />
         <FiFilter className="icon" />
+        <FiTrash className="icon" onClick={deleteBoard} />
       </CommandBar>
       <div>
         {value.data().lists.map(list => {
@@ -484,9 +515,8 @@ const Board = ({ id, resetBoard }) => {
                 </form>
               ) : (
                 <ListTitleRow>
-                  <TitleDropdown
-                    onClick={() => setMenus({ [list.id]: true })}
-                  />
+                  {/* Eventually replace this with StyledDropdown */}
+                  <ListDelete onClick={() => deleteList(list.id)}/>
                   <ListTitle
                     color={list.color}
                     id={`title-${list.id}`}
@@ -496,18 +526,10 @@ const Board = ({ id, resetBoard }) => {
                   </ListTitle>
                 </ListTitleRow>
               )}
-              {menus[list.id] ? (
-                <Menu ref={refMenu}>
-                  <MenuItem onClick={deleteBoard}>
-                    <FiTrash />
-                    Delete Board
-                  </MenuItem>
-                </Menu>
-              ) : null}
               {list.items.map(item => {
                 return (
                   <ListRow key={item.id}>
-                    <Dropdown />
+                    <StyledDropdown />
                     <ListItem color={list.color}>
                       <p>{item.name}</p>
                       <p>{item.date || ""}</p>
